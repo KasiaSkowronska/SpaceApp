@@ -1,0 +1,19 @@
+ruleset CEOrules {
+
+import space.Stock;
+
+  variables {
+    String helloWorld = new String("Able rules!"); // One variable minimum
+    String name;
+    static Stock stock = new Stock("pizza", 90);
+  }
+
+  inputs{name};  // Optional
+  outputs{}; // Optional
+
+  void process() using Script {
+    Rule0: println("Hi, my name is " + name); // One rule minimum
+    Rule1: println("We have:" + stock.type); // One rule minimum
+    
+  }
+}

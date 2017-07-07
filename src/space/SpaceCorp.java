@@ -12,12 +12,16 @@ public class SpaceCorp extends AbleDefaultAgent{
 	
 	private Stock stock;
 	private String name;
+	private Spaceship spaceship;
+	private CorpoCEO ceo;
 	
 	
 	public SpaceCorp(String name) throws AbleException{
 		super("SpaceCorp");
 		inputBuffer = new Object[1];
 		stock = new Stock("wood", 50);
+		spaceship = new Spaceship("Stateczek");
+		ceo = new CorpoCEO("Szef");
 		this.name = name;
 		reset();
 		init();
@@ -52,12 +56,15 @@ public class SpaceCorp extends AbleDefaultAgent{
 	@Override
 	public void process() throws AbleException {
 		System.out.println(stock.getType());
-		OfferMessage ofr = new OfferMessage("wood", 50, this);
+		OfferMessage ofr = new OfferMessage(stock.getType(), stock.getStockAmount(), this);
 		notifyAbleEventListeners(new AbleEvent(this, ofr));
 		processBufferConnections();
 		Stock order = (Stock)getInputBuffer(0);
 		if (order != null){
 			System.out.println("Zamówienie: " + order.getType() + " " + order.getStockAmount());
+			stock.setStockAmount(stock.getStockAmount() - order.getStockAmount());
+			ceo.setInputBuffer(0, "Typ");
+			ceo.process();
 		}
 
 	}

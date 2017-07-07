@@ -3,7 +3,7 @@ package space;
 public class Stock {
 	
 	private Integer stockAmount;
-	private String type;
+	public String type;
 	
 	
 
