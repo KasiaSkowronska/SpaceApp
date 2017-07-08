@@ -28,6 +28,10 @@ public class Stock {
 		this.type = type;
 	}
 	
+	public void addAmount(int amount){
+		stockAmount += amount;
+	}
+	
 	
 
 }

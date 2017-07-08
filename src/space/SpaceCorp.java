@@ -1,6 +1,7 @@
 package space;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -28,12 +29,10 @@ public class SpaceCorp extends AbleDefaultAgent{
 	private Stock diamonds = new Stock("diamonds", 0);
 	private Stock uran = new Stock("uran", 0);
 	
-	
 	public SpaceCorp(String name) throws AbleException{
 		super("SpaceCorp");
 		this.name = name;
 		inputBuffer = new Object[1];
-		stock = new Stock("wood", 50);
 		fleet = new Vector();
 		buyShips();
 		ceo = new CorpoCEO("Szef");
@@ -70,10 +69,11 @@ public class SpaceCorp extends AbleDefaultAgent{
 	@Override
 	public void process() throws AbleException {
 		System.out.println("Proces copro");
-		OfferMessage ofr = new OfferMessage(stock.getType(), stock.getStockAmount(), this);
+		OfferMessage ofr = new OfferMessage(wood.getType(), wood.getStockAmount(), this);
 		notifyAbleEventListeners(new AbleEvent(this, ofr));
 		processBufferConnections();
 		Stock order = (Stock)getInputBuffer(0);
+		removeAllBufferConnections();
 		if (order != null){
 			System.out.println("Zamówienie: " + order.getType() + " " + order.getStockAmount());
 			stock.setStockAmount(stock.getStockAmount() - order.getStockAmount());
@@ -93,9 +93,9 @@ public class SpaceCorp extends AbleDefaultAgent{
 	}
 	
 	public void buyShips() throws AbleException{
-		Spaceship ship1 = new Spaceship("Stateczek", 100);
-		Spaceship ship2 = new Spaceship("Drugi", 60);
-		Spaceship ship3 = new Spaceship("Trzeci", 70);
+		Spaceship ship1 = new Spaceship("Stateczek", 100, this);
+		Spaceship ship2 = new Spaceship("Drugi", 60, this);
+		Spaceship ship3 = new Spaceship("Trzeci", 70, this);
 		fleet.addElement(ship1);
 		fleet.addElement(ship2);
 		fleet.addElement(ship3);		
@@ -104,6 +104,17 @@ public class SpaceCorp extends AbleDefaultAgent{
 	public void setPlanets(Vector<Planet> planets){
 		planetList = planets;
 		location = planets.get(0);
+	}
+	
+	public void receiveLoading(String loadingType, int amount) throws InterruptedException{
+		if (loadingType == "wood"){
+			wood.addAmount(amount);
+			System.out.println("Nowy stan drewna" + wood.getStockAmount());
+		} else if (loadingType == "diamonds"){
+			diamonds.addAmount(amount);
+		} else if (loadingType == "uran") {
+			uran.addAmount(amount);
+		}
 	}
 	
 	

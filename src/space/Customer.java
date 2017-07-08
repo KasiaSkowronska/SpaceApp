@@ -47,6 +47,7 @@ public class Customer extends AbleDefaultAgent{
 		SpaceCorp corpo = ofr.getCorpo();
 		System.out.println(Thread.currentThread().getId() +": Oferta to:" + ofr.getText() + " " + ofr.getAmount() + " od: " + corpo.getName());
 		buy(corpo);
+		removeAllBufferConnections();
 	}
 
 	

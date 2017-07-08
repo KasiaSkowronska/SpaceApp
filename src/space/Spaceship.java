@@ -10,13 +10,15 @@ public class Spaceship extends AbleDefaultAgent {
 	public int capacity;
 	public String name;
 	
-	private String loadingType;
+	public String loadingType = null;
+	private SpaceCorp owner;
 	
 
-	public Spaceship(String name, int capacity) throws AbleException{
+	public Spaceship(String name, int capacity, SpaceCorp owner) throws AbleException{
 		super("Spaceship");
 		this.name = name;
 		this.capacity = capacity;
+		this.owner = owner;
 		isEmpty = true;
 		reset();
 		init();
@@ -48,11 +50,14 @@ public class Spaceship extends AbleDefaultAgent {
 	public void launch(String stock){
 		System.out.println("Wysłano po towar: " + stock + "statek: " + name);
 		isEmpty = false;
+		loadingType = stock;
 	}
 	
 	public void unload() throws InterruptedException{
+		owner.receiveLoading(loadingType, capacity);
+		System.out.println("Wyładowano "+ capacity + " " + loadingType + " ze statku " + name);
 		isEmpty = true;
-		System.out.println("Wyładowano "+ capacity + " ze statku " + name);
+		loadingType = null;
 	}
 	
 	
