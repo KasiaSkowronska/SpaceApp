@@ -3,6 +3,7 @@ ruleset CEOrules {
 import space.Stock;
 import space.Spaceship;
 import space.SpaceCorp;
+import space.Planet;
 import java.util.Iterator;
 import java.util.Vector ; 
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ import java.util.Collection;
     String helloWorld = new String("Able rules!"); // One variable minimum
     String name;
     String Goal;
-    String missingStock = "none";
-    static Stock stock = new Stock("pizza", 90);
+
     static Spaceship ship;
     static Vector ships;
-    //static Vector planets;
+    static Vector planets;
+    static Planet planet;
     Iterator i;
 
     
@@ -24,13 +25,9 @@ import java.util.Collection;
    static Stock diamonds;
     static Stock uran;
     
-    Expression isNoWood = wood < 60; 
-    Expression expr ;  
-    Selector selector;
-    Integer result;
   }
 
-  inputs{name, ship, wood, diamonds, uran, ships};  // Optional
+  inputs{name, ship, wood, diamonds, uran, ships, planets};  // Optional
   outputs{}; // Optional
   
 
@@ -38,10 +35,10 @@ import java.util.Collection;
     void preProcess() {
     PP:  wm.clear(); 
     PP0: wm.assertAll(ships) ;
-    PP1: wm.assert(missingStock) ;
     Pwood: wm.assert(wood);
     Pdia: wm.assert(diamonds);
     Puran: wm.assert(uran);
+    PPplantes: wm.assertAll(planets);
   }
 
   void process() using PatternMatchRete {
@@ -50,27 +47,22 @@ import java.util.Collection;
       do  {       
             ship.unload(); 
           }
-  Rule1: println("Proces ceo" + missingStock + ship.isEmpty); 
+  Rule1: println("Proces ceo "); 
     Rule_4:
       when( Spaceship ship   ( ship.isEmpty == true ) )
       do  {       
-            println("Puste statki" + ship.name); 
-            wm.assert(wood);
+            println("Statek " + ship.name + " jest pusty"); 
             wm.assert(ship);
           }
     NoStock:
-      when( Stock wood   ( wood.getStockAmount() < 1000) & 
+      when( Stock stock   ( stock.getStockAmount() < 500) & 
       		Spaceship ship (ship.isEmpty == true) &
-      		String missingStock (missingStock == "none") )
+      		Planet planet (planet.stockType == stock.type))
       do  {       
-            println("Rule: No wood");
-            ship.launch(wood.type);
-            // wm.assert(wood);
+            ship.launch(stock.type, planet);
+            //wm.assert(wood);
             wm.modify(ship);
-            wm.modify(wood);
-            //missingStock = "wood";
-           // wm.assert(missingStock);
-            //missingStock = "wood";  
+            wm.modify(stock);
           }     
 }
 }

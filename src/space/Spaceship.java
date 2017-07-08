@@ -47,8 +47,8 @@ public class Spaceship extends AbleDefaultAgent {
 		//System.out.println("Hi, I'm spaceship " + name);
 	}
 	
-	public void launch(String stock){
-		System.out.println("Wysłano po towar: " + stock + "statek: " + name);
+	public void launch(String stock, Planet planet){
+		System.out.println("Wysłano po towar: " + stock + " statek: " + name + " na planetę: " + planet.name);
 		isEmpty = false;
 		loadingType = stock;
 	}

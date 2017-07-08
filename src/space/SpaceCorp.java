@@ -29,13 +29,18 @@ public class SpaceCorp extends AbleDefaultAgent{
 	private Stock diamonds = new Stock("diamonds", 0);
 	private Stock uran = new Stock("uran", 0);
 	
-	public SpaceCorp(String name) throws AbleException{
+	private int money;
+	
+	public SpaceCorp(String name, Vector<Planet> universum) throws AbleException{
 		super("SpaceCorp");
 		this.name = name;
 		inputBuffer = new Object[1];
 		fleet = new Vector();
+		planetList = universum;
+		location = universum.get(0);
 		buyShips();
 		ceo = new CorpoCEO("Szef");
+		money = 0;
 		reset();
 		init();
 	}
@@ -78,18 +83,19 @@ public class SpaceCorp extends AbleDefaultAgent{
 			System.out.println("Zamówienie: " + order.getType() + " " + order.getStockAmount());
 			stock.setStockAmount(stock.getStockAmount() - order.getStockAmount());
 		}
-		ceo.setInputBuffer(0, "Typ");
-		ceo.setInputBuffer(1, fleet.get(0));
-		ceo.setInputBuffer(5, fleet);
 		updateCEO();
 		ceo.process();
 
 	}
 	
 	public void updateCEO() throws AbleException{
+		ceo.setInputBuffer(0, "Typ");
+		ceo.setInputBuffer(1, fleet.get(0));
 		ceo.setInputBuffer(2, wood);
 		ceo.setInputBuffer(3, diamonds);
 		ceo.setInputBuffer(4, uran);
+		ceo.setInputBuffer(5, fleet);
+		ceo.setInputBuffer(6, planetList);
 	}
 	
 	public void buyShips() throws AbleException{
@@ -101,10 +107,6 @@ public class SpaceCorp extends AbleDefaultAgent{
 		fleet.addElement(ship3);		
 	}
 	
-	public void setPlanets(Vector<Planet> planets){
-		planetList = planets;
-		location = planets.get(0);
-	}
 	
 	public void receiveLoading(String loadingType, int amount) throws InterruptedException{
 		if (loadingType == "wood"){
@@ -112,8 +114,10 @@ public class SpaceCorp extends AbleDefaultAgent{
 			System.out.println("Nowy stan drewna" + wood.getStockAmount());
 		} else if (loadingType == "diamonds"){
 			diamonds.addAmount(amount);
+			System.out.println("Nowy stan diamentów" + diamonds.getStockAmount());
 		} else if (loadingType == "uran") {
 			uran.addAmount(amount);
+			System.out.println("Nowy stan uranu" + uran.getStockAmount());
 		}
 	}
 	

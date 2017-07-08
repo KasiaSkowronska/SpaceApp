@@ -10,10 +10,10 @@ public class Planet {
 	
 	
 	
-	public Planet(String name) {
+	public Planet(String name, String stockType) {
 		this.name = name;
 		this.distance = new Random().nextInt(1000);
-		this.stockType = "diamonds";
+		this.stockType = stockType;
 	}
 	public String getName() {
 		return name;
