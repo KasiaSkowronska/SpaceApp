@@ -1,5 +1,9 @@
 package space;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import com.ibm.able.Able;
 import com.ibm.able.AbleDefaultAgent;
 import com.ibm.able.AbleEvent;
@@ -11,18 +15,28 @@ public class SpaceCorp extends AbleDefaultAgent{
 	private static final long serialVersionUID = 1L;
 	
 	private Stock stock;
+	
 	private String name;
-	private Spaceship spaceship;
+	//private Spaceship spaceship;
 	private CorpoCEO ceo;
+	private Planet location;
+	private Vector<Spaceship> fleet;
+	private Vector<Planet> planetList;
+	
+	
+	private Stock wood = new Stock("wood", 0);
+	private Stock diamonds = new Stock("diamonds", 0);
+	private Stock uran = new Stock("uran", 0);
 	
 	
 	public SpaceCorp(String name) throws AbleException{
 		super("SpaceCorp");
+		this.name = name;
 		inputBuffer = new Object[1];
 		stock = new Stock("wood", 50);
-		spaceship = new Spaceship("Stateczek");
+		fleet = new Vector();
+		buyShips();
 		ceo = new CorpoCEO("Szef");
-		this.name = name;
 		reset();
 		init();
 	}
@@ -55,7 +69,7 @@ public class SpaceCorp extends AbleDefaultAgent{
 
 	@Override
 	public void process() throws AbleException {
-		System.out.println(stock.getType());
+		System.out.println("Proces copro");
 		OfferMessage ofr = new OfferMessage(stock.getType(), stock.getStockAmount(), this);
 		notifyAbleEventListeners(new AbleEvent(this, ofr));
 		processBufferConnections();
@@ -63,11 +77,36 @@ public class SpaceCorp extends AbleDefaultAgent{
 		if (order != null){
 			System.out.println("Zamówienie: " + order.getType() + " " + order.getStockAmount());
 			stock.setStockAmount(stock.getStockAmount() - order.getStockAmount());
-			ceo.setInputBuffer(0, "Typ");
-			ceo.process();
 		}
+		ceo.setInputBuffer(0, "Typ");
+		ceo.setInputBuffer(1, fleet.get(0));
+		ceo.setInputBuffer(5, fleet);
+		updateCEO();
+		ceo.process();
 
 	}
+	
+	public void updateCEO() throws AbleException{
+		ceo.setInputBuffer(2, wood);
+		ceo.setInputBuffer(3, diamonds);
+		ceo.setInputBuffer(4, uran);
+	}
+	
+	public void buyShips() throws AbleException{
+		Spaceship ship1 = new Spaceship("Stateczek", 100);
+		Spaceship ship2 = new Spaceship("Drugi", 60);
+		Spaceship ship3 = new Spaceship("Trzeci", 70);
+		fleet.addElement(ship1);
+		fleet.addElement(ship2);
+		fleet.addElement(ship3);		
+	}
+	
+	public void setPlanets(Vector<Planet> planets){
+		planetList = planets;
+		location = planets.get(0);
+	}
+	
+	
 	
 	
 	

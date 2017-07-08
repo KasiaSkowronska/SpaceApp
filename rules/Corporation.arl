@@ -1,0 +1,63 @@
+ruleset Corporation {
+//import miners.Resource;
+import com.ibm.able.beans.AbleImportImpl;
+import com.ibm.able.Able;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import space.Spaceship;
+
+  variables {   
+    static Spaceship ship = new Spaceship("statek", 90);
+    
+    Integer wmDataSize = 0;
+    Integer result;
+    String prefix = "/home/krz-glowka/workspace/Kosmiczni-gornicy/data/";
+    //static AbleImportImpl resources = new AbleImportImpl("Resources", prefix + "Resources.dfn");
+  }
+
+  inputs{};
+  outputs{wm};
+
+  void init() {
+  	//: println("hej");
+  //	: resources.setDelimiter(" ");
+    XX: invokeRuleBlock("getData");  // populate the data 
+  }
+
+  void getData() {
+  	//: println("sdf");
+    // read data from file
+    //G1: resources.init();
+    
+    G2: wm.assert(ship);
+    
+    
+    //G3: ARL.assertData(wm, freeShuttles, "miners.Shuttle");
+  }
+  
+  void preProcess() {
+  	PP: println("sdfdsf");
+  	
+  	//PP2: ARL.assertDataSource(wm, resources, "miners.Resource");
+    //PP0: wmDataSize = wm.findAllInstances("miners.Resource").size();
+   // PP1: wm.assert(goal1); // provide the initial goal
+    //PP3: println("preProcess: Dataset size: " + wmDataSize + ".");
+  }
+
+  void process() using PatternMatchRete {    
+  	Rule_1:
+      when( Spaceship sh  ( sh.name == "statek" ) )
+      do  {      
+      		println("Rule_1: Goal '"); 
+    		//expr = new Expression(this, "person.native_country == \"Poland\"");  
+    		//selector = new Selector(this.getVariable("person"), expr, true) ;
+      		//result = wm.findAll( selector ).size() ; 
+            
+            wm.assert("PONIES");
+          }
+
+  }
+
+}

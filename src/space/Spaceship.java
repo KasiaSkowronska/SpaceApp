@@ -6,12 +6,17 @@ import com.ibm.able.AbleException;
 
 public class Spaceship extends AbleDefaultAgent {
 	
-	private Boolean isEmpty;
-	private String name;
+	public Boolean isEmpty;
+	public int capacity;
+	public String name;
+	
+	private String loadingType;
+	
 
-	public Spaceship(String name) throws AbleException{
+	public Spaceship(String name, int capacity) throws AbleException{
 		super("Spaceship");
 		this.name = name;
+		this.capacity = capacity;
 		isEmpty = true;
 		reset();
 		init();
@@ -37,8 +42,20 @@ public class Spaceship extends AbleDefaultAgent {
 
 	@Override
 	public void process() throws AbleException {
-		System.out.println("Hi, I'm spaceship " + name);
+		//System.out.println("Hi, I'm spaceship " + name);
 	}
+	
+	public void launch(String stock){
+		System.out.println("Wysłano po towar: " + stock + "statek: " + name);
+		isEmpty = false;
+	}
+	
+	public void unload() throws InterruptedException{
+		isEmpty = true;
+		System.out.println("Wyładowano "+ capacity + " ze statku " + name);
+	}
+	
+	
 
 }
 

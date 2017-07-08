@@ -1,19 +1,103 @@
 ruleset CEOrules {
 
 import space.Stock;
+import space.Spaceship;
+import java.util.Iterator;
+import java.util.Vector ; 
+import java.util.ArrayList;
+import java.util.Collection;
 
   variables {
     String helloWorld = new String("Able rules!"); // One variable minimum
     String name;
-    static Stock stock = new Stock("pizza", 90);
-  }
-
-  inputs{name};  // Optional
-  outputs{}; // Optional
-
-  void process() using Script {
-    Rule0: println("Hi, my name is " + name); // One rule minimum
-    Rule1: println("We have:" + stock.type); // One rule minimum
+    String Goal;
+    String missingStock = "none";
     
+    static Stock stock = new Stock("pizza", 90);
+    static Spaceship ship;
+    static Vector ships;
+    static Vector planets;
+    static Collection freeShips = new ArrayList(); 
+    Iterator i;
+
+    
+  static Stock wood;
+   static Stock diamonds;
+    static Stock uran;
+    
+    Expression isNoWood = wood < 60; 
+    Expression expr ;  
+    Selector selector;
+    Integer result;
   }
+
+  inputs{name, ship, wood, diamonds, uran, ships, planets};  // Optional
+  outputs{}; // Optional
+  
+
+  
+    void preProcess() {
+    PP:  wm.clear(); 
+    PP0: wm.assertAll(ships) ;
+    PP1: wm.assert(missingStock) ;
+    Pwood: wm.assert(wood);
+    Pdia: wm.assert(diamonds);
+    Puran: wm.assert(uran);
+    //PP9: wm.assert(freeShips) ;
+  }
+
+  void process() using PatternMatchRete {
+      Rule_unload:
+      when( Spaceship ship   ( ship.isEmpty == false ) )
+      do  {       
+            ship.unload(); 
+          }
+  Rule1: println("Proces ceo" + missingStock + ship.isEmpty); 
+    Rule_4:
+      when( Spaceship ship   ( ship.isEmpty == true ) )
+      do  {       
+            println("Puste statki" + ship.name); 
+            wm.assert(wood);
+            wm.assert(ship);
+          }
+    NoWodfod:
+      when( Stock diamonds   (diamonds.getStockAmount() == 0) & 
+      		Spaceship ship (ship.isEmpty == true) )
+      do  {       
+            println("Rule: No diamonds");
+            ship.launch(diamonds.type);}
+    NoWood:
+      when( Stock wood   ( wood.getStockAmount() == 5) & 
+      		Spaceship ship (ship.isEmpty == true and ship.capacity == 60) &
+      		String missingStock (missingStock == "none") )
+      do  {       
+            println("Rule: No wood");
+            ship.launch(wood.type);
+            wm.retract(wood);
+            wm.modify(ship);
+            //wm.assert(wood);
+            //missingStock = "wood";
+            wm.assert(missingStock);
+            //missingStock = "wood";  
+          }
+    NoDiamonds:
+      when( Stock diamonds   ( diamonds.getStockAmount() < 50 ) )
+      do  {       
+            println("No diamonds"); 
+          }
+    NoUran:
+      when( Stock uran   ( uran.getStockAmount() < 50 ) )
+      do  {       
+            println("No uran"); 
+            Goal = "launch_ship";
+            wm.assert(Goal);
+          }
+
+	//NoWood: if (isNoWood == true) then println("We have no wood");
+	//NoDiamonds: if (diamonds == 0) then println("We have no diamonds");
+    //NoUran: if (uran == 0) then println("We have no uran");
+          
+
+
+}
 }
